@@ -1,10 +1,11 @@
 var fs = require('fs');
 var jade = require('jade');
 var _ = require('lodash');
-var userTokens = require('../data/userTokens.json');
-var users = require('../data/userList.json');
 
 exports.generate = function () {
+    var userTokens = require('../data/userTokens.json');
+    var users = require('../data/userList.json');
+
     var i, shuffledUsers, invalid = true;
     checkValid: do {
         shuffledUsers = _.shuffle(users);

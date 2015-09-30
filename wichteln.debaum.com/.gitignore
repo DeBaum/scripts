@@ -5,5 +5,6 @@
 node_modules
 
 # deployment
-dist
-data
+data/*
+dist/page/*
+dist/mail/*
