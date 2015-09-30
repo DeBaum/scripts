@@ -1,0 +1,9 @@
+# IntelliJ IDEA
+.idea/workspace.xml
+
+# node.js
+node_modules
+
+# deployment
+dist
+data
