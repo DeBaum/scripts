@@ -24,6 +24,7 @@ exports.generate = function () {
       partner: shuffledUsers[i]
     }));
   }
+  copyRewriteRules();
 };
 
 function savePage(name, str) {
@@ -33,4 +34,10 @@ function savePage(name, str) {
   var fd = fs.openSync("dist/page/" + name + ".html", "w");
   fs.writeSync(fd, str);
   fs.closeSync(fd);
+}
+
+function copyRewriteRules() {
+  var readStream = fs.createReadStream('template/.htaccess');
+  var writeStream = fs.createWriteStream('dist/page/.htaccess');
+  readStream.pipe(writeStream);
 }
