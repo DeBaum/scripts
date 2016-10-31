@@ -4,7 +4,8 @@
   "description": "Generates Passwords",
   "main": "src/index.js",
   "scripts": {
-    "install": "napa"
+    "install": "napa",
+    "tsc": "tsc -w"
   },
   "napa": {
     "dictionaries": "titoBouzout/Dictionaries"
