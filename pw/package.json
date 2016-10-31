@@ -1,0 +1,30 @@
+{
+  "name": "passwords",
+  "version": "0.0.1",
+  "description": "Generates Passwords",
+  "main": "src/index.js",
+  "scripts": {
+    "install": "napa"
+  },
+  "napa": {
+    "dictionaries": "titoBouzout/Dictionaries"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeBaum/scripts.git"
+  },
+  "keywords": [
+    "pw",
+    "passwords",
+    "generation"
+  ],
+  "author": "DeBaum",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DeBaum/scripts/issues"
+  },
+  "homepage": "https://github.com/DeBaum/scripts#readme",
+  "dependencies": {
+    "napa": "^2.3.0"
+  }
+}
