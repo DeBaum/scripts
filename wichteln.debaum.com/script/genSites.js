@@ -1,6 +1,7 @@
 var fs = require("fs");
 var jade = require("jade");
 var _ = require("lodash");
+var template = jade.compileFile("template/page.jade", null);
 
 exports.generate = function () {
   var userTokens = require("../data/userTokens.json");
@@ -17,7 +18,6 @@ exports.generate = function () {
     invalid = false;
   } while (invalid);
 
-  var template = jade.compileFile("template/page.jade");
   for (i = 0; i < userTokens.length; i++) {
     savePage(userTokens[i].token, template({
       userName: userTokens[i].name,

@@ -1,6 +1,6 @@
 var fs = require("fs");
 var jade = require("jade");
-var mailTemplate = jade.compileFile("template/mail.jade");
+var mailTemplate = jade.compileFile("template/mail.jade", null);
 
 exports.generate = function () {
   var userTokens = require("../data/userTokens.json");
