@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    title #{locals.title}
+  body
+    div(id="date") #{locals.start.toISOString()}
+    // start,end,title,for,where,registrationRequired,registrationUntil,registrationAt,fee,other
+    h1 #{locals.title}
+    p
+      | #{locals.start.format("dddd, DD.MM.YYYY[ um ]hh:mm[ Uhr]", "de")}
+      if locals.end
+        |  bis #{locals.end.format("dddd, DD.MM.YYYY[ um ]hh:mm[ Uhr]", "de")}
+    if locals.for
+      p #{locals.for}
+    if locals.registrationRequired
+      p
+      | Anmeldung bis
+      |  #{locals.registrationUntil.format("dddd, DD.MM.YYYY")}
+      if locals.registrationAt
+        |  bei
+        |  #{locals.registrationAt}

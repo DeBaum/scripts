@@ -1,0 +1,13 @@
+{
+  "name": "kfd-importer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "DeBaum",
+  "license": "ISC",
+  "devDependencies": {
+    "csv-parser": "^1.11.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "pug": "^2.0.0-rc.2"
+  }
+}
