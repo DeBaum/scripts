@@ -24,7 +24,7 @@ var inline_src = (<><![CDATA[
     higlightColor: "#ff0000",
     cardList: [],
     storeUrl: "https://www.cardmarket.com/de/Magic/MainPage/showSearchResult?searchFor=$0"
-  })
+  });
 
   mobx.autorun(setStyle);
   loadState();
@@ -61,7 +61,7 @@ var inline_src = (<><![CDATA[
     });
 
     $panel.find(".btn.db-clear").on("click", e => {
-      const { cardList } = state
+      const { cardList } = state;
       mobx.runInAction(() => {
         while (cardList.length) {
           cardList.pop();
@@ -70,7 +70,7 @@ var inline_src = (<><![CDATA[
       });
     });
 
-    $panel.find(".db-color-input").on("change", (e) => {
+    $panel.find(".db-color-input input").on("change", (e) => {
       state.higlightColor = $(e.target).val();
     });
 
@@ -79,7 +79,7 @@ var inline_src = (<><![CDATA[
     const $textarea = $panel.find("textarea");
     const $count = $panel.find(".count");
     mobx.autorun(() => {
-      const { cardList } = state
+      const { cardList } = state;
       $textarea.val(cardList.map(e => `1 ${e}`).join("\n"));
       $count.html(cardList.length);
     });
@@ -170,11 +170,17 @@ var inline_src = (<><![CDATA[
       }
 
       .db-color-input {
-        padding: 4px;
+        padding-top: 4px;
+        padding-bottom: 4px;
       }
 
       .db-color-input input {
         height: 24px;
+        min-height: 24px;
+        max-height: 24px;
+        border: none;
+        padding: 0;
+        background: transparent;
       }
 
       .selected img {
