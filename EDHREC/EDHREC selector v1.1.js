@@ -10,6 +10,7 @@
 // @require      https://unpkg.com/lodash@4.17.4/lodash.min.js
 // @match        https://edhrec.com/commanders/*
 // @match        https://edhrec.com/cards/*
+// @match        https://edhrec.com/top/*
 // ==/UserScript==
 
 /* jshint ignore:start */
@@ -24,16 +25,28 @@ var inline_src = (<><![CDATA[
     higlightColor: "#ff0000",
     cardList: []
   })
-  const commanderName = $(".cardpanel2 h3").text();
 
   mobx.autorun(setStyle);
+  loadCards();
+  processCards();
   mobx.autorun(saveCards);
   const $panel = addPanel();
   addEvents($panel);
 
   // FUNCTIONS
   function saveCards() {
-    localStorage.setItem(commanderName, JSON.stringify(state.cardList));
+    localStorage.setItem("set-builder", JSON.stringify(state.cardList));
+  }
+
+  function loadCards() {
+    let cards = localStorage.getItem("set-builder");
+    if (cards) {
+      try {
+        state.cardList = JSON.parse(cards);
+      } catch (ignored) {
+        localStorage.removeItem("set-builder");
+      }
+    }
   }
 
   function addEvents($panel) {
@@ -62,7 +75,7 @@ var inline_src = (<><![CDATA[
     const $count = $panel.find(".count");
     mobx.autorun(() => {
       const { cardList } = state
-      $textarea.val(cardList.join("\n"));
+      $textarea.val(cardList.map(e => `1 ${e}`).join("\n"));
       $count.html(cardList.length);
     });
   }
@@ -70,27 +83,31 @@ var inline_src = (<><![CDATA[
   function toggleCard($elm) {
     const { cardList } = state;
     $elm.toggleClass("selected");
-    const listName = getCardString($elm.parent());
+    const cardListEntry = getCardName($elm.parent());
     if ($elm.is(".selected")) {
-      cardList.push(listName);
+      cardList.push(cardListEntry);
     } else {
-      cardList.splice(cardList.indexOf(listName), 1);
+      cardList.splice(cardList.indexOf(cardListEntry), 1);
     }
   }
 
-  function getCardString($elm) {
-    let cardName = $elm.find(".nwname").text();
-    const imgSrc = $elm.find(".oneimage, .frontimage").attr("src");
-    const [_, set, setId] = imgSrc.match(/\/([^\/]+?)\/([^\/]+?)a?\.jpg\?/);
-
-    if (cardName.includes("//")) {
-      cardName = cardName.split(" // ")[0];
+  function getCardName($elm) {
+    let name = $elm.closest(".nw, .panel").find(".nwname, h3").text();
+    if (name.includes("//")) {
+      name = name.split(" // ")[0];
     }
-    if (!cardName) {
-      cardName = commanderName;
-    }
+    return name;
+  }
 
-    return `1 [${set}:${setId}] ${cardName}`;
+  function processCards() {
+    $(".card").each((i, elm) => {
+      const $card = $(elm);
+      const cardName = getCardName($card);
+
+      if (state.cardList.indexOf(cardName) > -1) {
+        $card.addClass("selected");
+      }
+    });
   }
 
   function addPanel() {
@@ -111,7 +128,7 @@ var inline_src = (<><![CDATA[
       </div>
     `);
 
-    $panel.insertAfter($(".panel").last());
+    $("body").append($panel);
 
     return $panel;
   }
@@ -126,6 +143,7 @@ var inline_src = (<><![CDATA[
     style.html(`
       .panel.panel-builder {
         position: fixed;
+        z-index: 10;
         right: 6px;
         top: 60px;
         width: 500px;
