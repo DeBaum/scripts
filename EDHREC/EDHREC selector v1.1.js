@@ -31,6 +31,7 @@ var inline_src = (<><![CDATA[
   processCards();
   mobx.autorun(saveState);
   const $panel = addPanel();
+  mobx.autorun(() => setCount($panel));
   addEvents($panel);
 
   // FUNCTIONS
@@ -57,7 +58,8 @@ var inline_src = (<><![CDATA[
     });
 
     $panel.find(".panel-heading").on("click", (e) => {
-      $(e.target).closest(".panel").find(".panel-body").slideToggle();
+      const $panel = $(e.target).closest(".panel");
+      $panel.find(".panel-body").slideToggle();
     });
 
     $panel.find(".btn.db-clear").on("click", e => {
@@ -75,14 +77,20 @@ var inline_src = (<><![CDATA[
     });
 
     $panel.find("textarea").on("focus", (e) => $(e.target).select());
+  }
+
+  function setCount($panel) {
+    const { cardList, cardList: { length } } = state;
+    
 
     const $textarea = $panel.find("textarea");
     const $count = $panel.find(".count");
-    mobx.autorun(() => {
-      const { cardList } = state;
-      $textarea.val(cardList.map(e => `1 ${e}`).join("\n"));
-      $count.html(cardList.length);
-    });
+
+    $textarea.val(cardList.map(e => `1 ${e}`).join("\n"));
+    $count.html(cardList.length);
+
+    $panel.toggleClass("panel-warning", length > 80 && length < 100);
+    $panel.toggleClass("panel-danger", length >= 100);
   }
 
   function toggleCard($elm) {
@@ -124,11 +132,11 @@ var inline_src = (<><![CDATA[
     const $panel = $(`
       <div class="panel panel-builder panel-default recentpanel">
         <div class="panel-heading">
+          <span class="pull-right"><span class="count">0</span> Ausgewählt</span>
           <h3 class="panel-title">Deck Builder</h3>
         </div>
         <div class="panel-body">
           <div class="form-group clearfix">
-            <span class="count">0</span> Ausgewählt
             <div class="btn-group pull-right">
               <button class="btn btn-default db-color-input">
                 <input type="color" value="${state.higlightColor}" />
@@ -162,6 +170,10 @@ var inline_src = (<><![CDATA[
         right: 6px;
         top: 60px;
         width: 500px;
+      }
+
+      .panel.panel-builder .panel-heading {
+        cursor: pointer;
       }
 
       .panel-builder textarea {
