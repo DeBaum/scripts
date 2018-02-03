@@ -7,7 +7,6 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.18.2/babel.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.js
 // @require      https://unpkg.com/mobx@3.4.1/lib/mobx.umd.js
-// @require      https://unpkg.com/lodash@4.17.4/lodash.min.js
 // @match        https://edhrec.com/commanders/*
 // @match        https://edhrec.com/cards/*
 // @match        https://edhrec.com/top/*
@@ -23,26 +22,28 @@ var inline_src = (<><![CDATA[
   // INIT
   const state = mobx.observable({
     higlightColor: "#ff0000",
-    cardList: []
+    cardList: [],
+    storeUrl: "https://www.cardmarket.com/de/Magic/MainPage/showSearchResult?searchFor=$0"
   })
 
   mobx.autorun(setStyle);
-  loadCards();
+  loadState();
   processCards();
-  mobx.autorun(saveCards);
+  mobx.autorun(saveState);
   const $panel = addPanel();
   addEvents($panel);
 
   // FUNCTIONS
-  function saveCards() {
-    localStorage.setItem("set-builder", JSON.stringify(state.cardList));
+  function saveState() {
+    localStorage.setItem("set-builder", JSON.stringify(state));
   }
 
-  function loadCards() {
-    let cards = localStorage.getItem("set-builder");
-    if (cards) {
+  function loadState() {
+    let loaded = localStorage.getItem("set-builder");
+    if (loaded) {
       try {
-        state.cardList = JSON.parse(cards);
+        loaded = JSON.parse(loaded);
+        Object.assign(state, loaded);
       } catch (ignored) {
         localStorage.removeItem("set-builder");
       }
@@ -59,7 +60,7 @@ var inline_src = (<><![CDATA[
       $(e.target).closest(".panel").find(".panel-body").slideToggle();
     });
 
-    $panel.find(".btn").on("click", e => {
+    $panel.find(".btn.db-clear").on("click", e => {
       const { cardList } = state
       mobx.runInAction(() => {
         while (cardList.length) {
@@ -67,6 +68,10 @@ var inline_src = (<><![CDATA[
         }
         $(".card").removeClass("selected");
       });
+    });
+
+    $panel.find(".db-color-input").on("change", (e) => {
+      state.higlightColor = $(e.target).val();
     });
 
     $panel.find("textarea").on("focus", (e) => $(e.target).select());
@@ -83,7 +88,7 @@ var inline_src = (<><![CDATA[
   function toggleCard($elm) {
     const { cardList } = state;
     $elm.toggleClass("selected");
-    const cardListEntry = getCardName($elm.parent());
+    const cardListEntry = getCardName($elm);
     if ($elm.is(".selected")) {
       cardList.push(cardListEntry);
     } else {
@@ -92,7 +97,10 @@ var inline_src = (<><![CDATA[
   }
 
   function getCardName($elm) {
-    let name = $elm.closest(".nw, .panel").find(".nwname, h3").text();
+    let name = $elm.closest(".panel").find("h3").text();
+    if (!name) {
+      name = $elm.closest(".nw").find(".nwname").text();
+    }
     if (name.includes("//")) {
       name = name.split(" // ")[0];
     }
@@ -107,6 +115,8 @@ var inline_src = (<><![CDATA[
       if (state.cardList.indexOf(cardName) > -1) {
         $card.addClass("selected");
       }
+
+      $card.find(".price a").attr("href", state.storeUrl.replace("$0", cardName));
     });
   }
 
@@ -119,7 +129,12 @@ var inline_src = (<><![CDATA[
         <div class="panel-body">
           <div class="form-group clearfix">
             <span class="count">0</span> Ausgewählt
-            <button class="btn btn-danger pull-right">Löschen</button>
+            <div class="btn-group pull-right">
+              <button class="btn btn-default db-color-input">
+                <input type="color" value="${state.higlightColor}" />
+              </button>
+              <button class="btn btn-danger db-clear">Löschen</button>
+            </div>
           </div>
           <div class="form-group">
             <textarea readonly class="form-control"></textarea>
@@ -151,6 +166,15 @@ var inline_src = (<><![CDATA[
 
       .panel-builder textarea {
         max-width: 100%;
+        min-width: 100%;
+      }
+
+      .db-color-input {
+        padding: 4px;
+      }
+
+      .db-color-input input {
+        height: 24px;
       }
 
       .selected img {
