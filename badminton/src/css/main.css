@@ -1,9 +1,9 @@
 .container {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .card + .card {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 /* TABLE */
@@ -13,29 +13,28 @@
 }
 
 .results thead th {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .results thead th span {
-    display: inline-block;
-    white-space: nowrap;
-    -webkit-transform: translate(-0.8em, 1.8em) rotate(-90deg);
-    -moz-transform: translate(-0.8em, 1.8em) rotate(-90deg);
-    -o-transform: translate(-0.8em, 1.8em) rotate(-90deg);
-    transform: translate(-0.8em, 1.8em) rotate(-90deg);
-    -webkit-transform-origin: 0 0;
-    -moz-transform-origin: 0 0;
-    -o-transform-origin: 0 0;
-    transform-origin: 0 0;
-    -ms-transform: initial;
-    -ms-transform-origin: initial;
-    -ms-writing-mode: tb-rl;
-    *writing-mode: tb-rl;
+  display: inline-block;
+  white-space: nowrap;
+  -webkit-transform: translate(-0.8em, 1.8em) rotate(-90deg);
+  -moz-transform: translate(-0.8em, 1.8em) rotate(-90deg);
+  -o-transform: translate(-0.8em, 1.8em) rotate(-90deg);
+  transform: translate(-0.8em, 1.8em) rotate(-90deg);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  transform-origin: 0 0;
+  -ms-transform: initial;
+  -ms-transform-origin: initial;
+  -ms-writing-mode: tb-rl;
+  *writing-mode: tb-rl;
 }
 
-
 .results thead th span:before {
-    content: "";
-    float: left;
-    margin-top: 100%;
+  content: "";
+  float: left;
+  margin-top: 100%;
 }

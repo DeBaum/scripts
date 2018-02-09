@@ -1,7 +1,9 @@
 {
   "name": "badminton",
   "version": "0.0.1",
-  "scripts": {},
+  "scripts": {
+    "dev": "node tasks/dev.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/DeBaum/scripts.git"
@@ -14,5 +16,8 @@
   "homepage": "https://github.com/DeBaum/scripts#readme",
   "dependencies": {
     "bootstrap": "^4.0.0"
+  },
+  "devDependencies": {
+    "livereload": "^0.6.3"
   }
 }

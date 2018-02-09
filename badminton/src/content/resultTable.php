@@ -8,7 +8,7 @@ function renderTable($year, $round) {
     <table class="table results">
       <thead>
         <tr>
-          <th><span>test</span></th>
+          <th></th>
           <th><span>test</span></th>
           <th><span>test</span></th>
           <th><span>test</span></th>
