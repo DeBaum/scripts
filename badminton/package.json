@@ -1,0 +1,18 @@
+{
+  "name": "badminton",
+  "version": "0.0.1",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/DeBaum/scripts.git"
+  },
+  "author": "DeBaum",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DeBaum/scripts/issues"
+  },
+  "homepage": "https://github.com/DeBaum/scripts#readme",
+  "dependencies": {
+    "bootstrap": "^4.0.0"
+  }
+}
