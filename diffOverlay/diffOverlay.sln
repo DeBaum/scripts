@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "diffOverlay", "diffOverlay\diffOverlay.csproj", "{091167ED-D0C8-4676-8AAE-486363EF0FE9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{091167ED-D0C8-4676-8AAE-486363EF0FE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{091167ED-D0C8-4676-8AAE-486363EF0FE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{091167ED-D0C8-4676-8AAE-486363EF0FE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{091167ED-D0C8-4676-8AAE-486363EF0FE9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
