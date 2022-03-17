@@ -1,33 +1,42 @@
 #include <Arduino.h>
 #include <math.h>
+#include <Stepper.h>
 
 int l = 400; // länge der 2 Bretter
 float mmPerRev = 1.1; // Winkelsteigung der Gewindestange
 float stepsPerRev = 4096.0; // Steps pro kompletter Umdrehung des Stepper-Motors
-int gearRatio = 5; // gearRatio : 1 vom Stepper-Motor -> Gewindestange
+float gearRatio = 5.0; // gearRatio : 1 vom Stepper-Motor -> Gewindestange
 
 long seconds = 0;
 long currentSteps = 0;
 
-double toRadians(double degrees) {
+Stepper stepperMotor(stepsPerRev, 4, 5, 6, 7);
+
+float toRadians(float degrees) {
   return (degrees / 180) * M_PI;
 }
 
-double calcAngle(long seconds) {
-  return seconds * (360.0 / 24.0 / 60.0 / 60.0); // = 0.004166666f
+float calcAngle(long seconds) {
+  // Erdrotation: 23 Stunden, 56 Minuten, 4 Sekunden
+  float secondsPerDay = (23.0 * 60.0 * 60.0) + (56.0 * 60.0) + 4;
+  return seconds * (360.0 / secondsPerDay); // = 0.004178079f
 }
 
-double calcMM(double angle) {
-  double cosVal = cos(toRadians(angle));
-	double lSquareTimes2 = l*l*2;
+float calcMM(float angle) {
+  float cosVal = cos(toRadians(angle));
+	float lSquareTimes2 = l*l*2;
   return cbrt(lSquareTimes2 - lSquareTimes2 * cosVal);
 }
 
-int mmToSteps(double mm) {
+int mmToSteps(float mm) {
   return floor((stepsPerRev / mmPerRev) * mm) * gearRatio;
 }
 
 void setup() {
+  float mm = calcMM(calcAngle(1));
+  long stepsPerSecond = ceil(mmToSteps(mm));
+  stepperMotor.setSpeed(ceil((stepsPerSecond * 60.0) / stepsPerRev) + 2); // müsste bei 400mm Seitenlänge ungefähr 10 ergeben
+
   cli(); // clear all interrupts
 
   TCCR1A = 0;// set entire TCCR1A register to 0
@@ -43,11 +52,12 @@ void setup() {
 void loop() { }
 
 ISR(TIMER1_COMPA_vect) {
-  double angle = calcAngle(seconds);
-  double mm = calcMM(angle);
+  seconds++;
+
+  float mm = calcMM(calcAngle(seconds));
   long newSteps = ceil(mmToSteps(mm));
 
-  // TODO stepper um `newSteps-currentSteps` drehen
+  stepperMotor.step(newSteps - currentSteps);
 
   currentSteps = newSteps;
 }
