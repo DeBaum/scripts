@@ -2,62 +2,56 @@
 #include <math.h>
 #include <Stepper.h>
 
-int l = 400; // länge der 2 Bretter
+#include "lookup.h"
+
 float mmPerRev = 1.1; // Winkelsteigung der Gewindestange
-float stepsPerRev = 4096.0; // Steps pro kompletter Umdrehung des Stepper-Motors
+float stepsPerRev = 2048.0; // Steps pro kompletter Umdrehung des Stepper-Motors
 float gearRatio = 5.0; // gearRatio : 1 vom Stepper-Motor -> Gewindestange
 
-long seconds = 0;
+unsigned long seconds = 1; // sekunde 0 = 0 steps -> erst mit sekunde 1 starten
 long currentSteps = 0;
 
 Stepper stepperMotor(stepsPerRev, 4, 5, 6, 7);
 
-float toRadians(float degrees) {
-  return (degrees / 180) * M_PI;
+bool canStep(int seconds) {
+	int arrIndex = seconds / lookup_steps;
+	return arrIndex + 1 < lookup_length;
 }
 
-float calcAngle(long seconds) {
-  // Erdrotation: 23 Stunden, 56 Minuten, 4 Sekunden
-  float secondsPerDay = (23.0 * 60.0 * 60.0) + (56.0 * 60.0) + 4;
-  return seconds * (360.0 / secondsPerDay); // = 0.004178079f
-}
+float getMM(int seconds) {
+	int arrIndex = seconds / lookup_steps;
 
-float calcMM(float angle) {
-  float cosVal = cos(toRadians(angle));
-	float lSquareTimes2 = l*l*2;
-  return cbrt(lSquareTimes2 - lSquareTimes2 * cosVal);
+	float progress = seconds % lookup_steps;
+	progress = progress / (float)lookup_steps;
+
+	float diff = pgm_read_float(&lookup_table[arrIndex + 1]);
+	diff -= pgm_read_float(&lookup_table[arrIndex]);
+
+	return pgm_read_float(&lookup_table[arrIndex]) + (progress * diff);
 }
 
 int mmToSteps(float mm) {
-  return floor((stepsPerRev / mmPerRev) * mm) * gearRatio;
+	return floor((stepsPerRev / mmPerRev) * mm) * gearRatio;
 }
 
 void setup() {
-  float mm = calcMM(calcAngle(1));
-  long stepsPerSecond = ceil(mmToSteps(mm));
-  stepperMotor.setSpeed(ceil((stepsPerSecond * 60.0) / stepsPerRev) + 2); // müsste bei 400mm Seitenlänge ungefähr 10 ergeben
-
-  cli(); // clear all interrupts
-
-  TCCR1A = 0;// set entire TCCR1A register to 0
-  TCCR1B = 0;// same for TCCR1B
-  TCCR1B |= (1 << WGM12); // ctc mode
-
-  TCCR1B |= (1 << CS12) | (1 << CS10); // prescaler = 1024
-  OCR1A = 16000000 / 1024; // count to 15.652 -> 1s
-
-  sei(); // enable all interrupts
+	float mmLastMinute = getMM((lookup_length - 1) * lookup_steps) - getMM((lookup_length - 1) * lookup_steps - 60);
+	float maxStepsPerMinute = mmToSteps(mmLastMinute);
+	stepperMotor.setSpeed(ceil((float)maxStepsPerMinute / stepsPerRev) + 1); // sollte immer in < 1 Sekunde drehen
 }
 
-void loop() { }
+void loop() {
+	if (seconds * 1000 > millis()) {
+		return; // warten auf nächste Sekunde
+	}
 
-ISR(TIMER1_COMPA_vect) {
-  seconds++;
+	if (!canStep(seconds)) {
+		return; // stoppen, um Gewindestange nicht raus zu drehen
+	}
 
-  float mm = calcMM(calcAngle(seconds));
-  long newSteps = ceil(mmToSteps(mm));
+	int newSteps = mmToSteps(getMM(seconds));
+	stepperMotor.step(newSteps - currentSteps);
 
-  stepperMotor.step(newSteps - currentSteps);
-
-  currentSteps = newSteps;
+	currentSteps = newSteps;
+	seconds++;
 }
