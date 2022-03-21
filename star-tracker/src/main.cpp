@@ -11,7 +11,7 @@ float gearRatio = 5.0; // gearRatio : 1 vom Stepper-Motor -> Gewindestange
 unsigned long seconds = 1; // sekunde 0 = 0 steps -> erst mit sekunde 1 starten
 long currentSteps = 0;
 
-Stepper stepperMotor(stepsPerRev, 4, 5, 6, 7);
+Stepper stepperMotor(stepsPerRev, 2, 4, 3, 5);
 
 bool canStep(int seconds) {
 	int arrIndex = seconds / lookup_steps;
@@ -35,7 +35,7 @@ int mmToSteps(float mm) {
 }
 
 void setup() {
-	float mmLastMinute = getMM((lookup_length - 1) * lookup_steps) - getMM((lookup_length - 1) * lookup_steps - 60);
+	float mmLastMinute = getMM((lookup_length - 1) * lookup_steps) - getMM((lookup_length - 2) * lookup_steps);
 	float maxStepsPerMinute = mmToSteps(mmLastMinute);
 	stepperMotor.setSpeed(ceil((float)maxStepsPerMinute / stepsPerRev) + 1); // sollte immer in < 1 Sekunde drehen
 }
