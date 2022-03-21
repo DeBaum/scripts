@@ -29,7 +29,7 @@ while mmCurrent < lMax:
 	lookupTable += '	{:.6f}f,\n'.format(mmCurrent)
 	seconds += steps
 
-f = open(os.path.join(scriptDir, '../src', 'lookup.h'), 'w')
+f = open(os.path.join(scriptDir, '../include', 'lookup.h'), 'w')
 f.truncate()
 f.write('#include <avr/pgmspace.h>\n\n')
 f.write('// l = {} mm, max = {} mm\n'.format(l, lMax, steps))
