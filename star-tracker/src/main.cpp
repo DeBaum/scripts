@@ -4,9 +4,9 @@
 
 #include "lookup.h"
 
-float mmPerRev = 1.1; // Winkelsteigung der Gewindestange
-float stepsPerRev = 2048.0; // Steps pro kompletter Umdrehung des Stepper-Motors
-float gearRatio = 5.0; // gearRatio : 1 vom Stepper-Motor -> Gewindestange
+float mmPerRev = 1.1f; // Winkelsteigung der Gewindestange
+float stepsPerRev = 2048.0f; // Steps pro kompletter Umdrehung des Stepper-Motors
+float gearRatio = 5.0f; // gearRatio : 1 vom Stepper-Motor -> Gewindestange
 
 unsigned long seconds = 1; // sekunde 0 = 0 steps -> erst mit sekunde 1 starten
 long currentSteps = 0;
@@ -31,12 +31,12 @@ float getMM(int seconds) {
 }
 
 int mmToSteps(float mm) {
-	return floor((stepsPerRev / mmPerRev) * mm) * gearRatio;
+	return floor((stepsPerRev / mmPerRev) * mm * gearRatio);
 }
 
 void setup() {
-	float mmLastMinute = getMM((lookup_length - 1) * lookup_steps) - getMM((lookup_length - 2) * lookup_steps);
-	float maxStepsPerMinute = mmToSteps(mmLastMinute);
+	float mmFirstMinute = getMM(0) - getMM(lookup_steps);
+	float maxStepsPerMinute = mmToSteps(mmFirstMinute);
 	stepperMotor.setSpeed(ceil((float)maxStepsPerMinute / stepsPerRev) + 1); // sollte immer in < 1 Sekunde drehen
 }
 
