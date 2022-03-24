@@ -35,9 +35,9 @@ int mmToSteps(float mm) {
 }
 
 void setup() {
-	float mmFirstMinute = getMM(0) - getMM(lookup_steps);
+	float mmFirstMinute = getMM(lookup_steps) - getMM(0);
 	float maxStepsPerMinute = mmToSteps(mmFirstMinute);
-	stepperMotor.setSpeed(ceil((float)maxStepsPerMinute / stepsPerRev) + 1); // sollte immer in < 1 Sekunde drehen
+	stepperMotor.setSpeed(ceil((float)maxStepsPerMinute / stepsPerRev)); // sollte immer in < 1 Sekunde drehen
 }
 
 void loop() {
@@ -50,7 +50,7 @@ void loop() {
 	}
 
 	int newSteps = mmToSteps(getMM(seconds));
-	stepperMotor.step(newSteps - currentSteps);
+	stepperMotor.step(currentSteps - newSteps); // negativ, da gegen den Uhrzeigersinn drehen
 
 	currentSteps = newSteps;
 	seconds++;
