@@ -3,8 +3,5 @@
   "version": "0.2",
   "description": "Generates Passwords",
   "main": "src/index.js",
-  "author": "DeBaum",
-  "scripts": {
-    "install": "git clone https://github.com/titoBouzout/Dictionaries.git node_modules/dictionaries"
-  }
+  "author": "DeBaum"
 }
